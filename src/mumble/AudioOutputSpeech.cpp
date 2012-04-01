@@ -42,7 +42,7 @@
 #include "opus.h"
 #endif
 
-AudioOutputSpeech::AudioOutputSpeech(ClientUser *user, unsigned int freq, MessageHandler::UDPMessageType type) : AudioOutputUser(user->qsName) {
+AudioOutputSpeech::AudioOutputSpeech(ClientUser *user, unsigned int freq, MessageTypes::UDPMessageType type) : AudioOutputUser(user->qsName) {
 	int err;
 	p = user;
 	umtType = type;
@@ -59,12 +59,12 @@ AudioOutputSpeech::AudioOutputSpeech(ClientUser *user, unsigned int freq, Messag
 	iFrameSize = iSampleRate / 100;
 	iAudioBufferSize = iFrameSize;
 
-	if (umtType == MessageHandler::UDPVoiceOpus) {
+	if (umtType == MessageTypes::UDPVoiceOpus) {
 #ifdef USE_OPUS
 		iAudioBufferSize *= 12;
 		opusState = opus_decoder_create(iSampleRate, bStereo ? 2 : 1, NULL);
 #endif
-	} else if (umtType == MessageHandler::UDPVoiceSpeex) {
+	} else if (umtType == MessageTypes::UDPVoiceSpeex) {
 		speex_bits_init(&sbBits);
 
 		dsSpeex = speex_decoder_init(speex_lib_get_mode(SPEEX_MODEID_UWB));
@@ -142,7 +142,7 @@ void AudioOutputSpeech::addFrameToBuffer(const QByteArray &qbaPacket, unsigned i
 	pds.next();
 
 	int samples = 0;
-	if (umtType == MessageHandler::UDPVoiceOpus) {
+	if (umtType == MessageTypes::UDPVoiceOpus) {
 		int size;
 		pds >> size;
 		size &= 0x1fff;
@@ -177,7 +177,7 @@ void AudioOutputSpeech::addFrameToBuffer(const QByteArray &qbaPacket, unsigned i
 		jbp.timestamp = iFrameSize * iSeq;
 
 #ifdef REPORT_JITTER
-		if (g.s.bUsage && (umtType != MessageHandler::UDPVoiceSpeex) && p && ! p->qsHash.isEmpty() && (p->qlTiming.count() < 3000)) {
+		if (g.s.bUsage && (umtType != MessageTypes::UDPVoiceSpeex) && p && ! p->qsHash.isEmpty() && (p->qlTiming.count() < 3000)) {
 			QMutexLocker qml(& p->qmTiming);
 
 			ClientUser::JitterRecord jr;
@@ -258,7 +258,7 @@ bool AudioOutputSpeech::needSamples(unsigned int snum) {
 					ucFlags = static_cast<unsigned char>(pds.next());
 
 					bHasTerminator = false;
-					if (umtType == MessageHandler::UDPVoiceOpus) {
+					if (umtType == MessageTypes::UDPVoiceOpus) {
 						int size;
 						pds >> size;
 
@@ -302,8 +302,8 @@ bool AudioOutputSpeech::needSamples(unsigned int snum) {
 			if (! qlFrames.isEmpty()) {
 				QByteArray qba = qlFrames.takeFirst();
 
-				if (umtType == MessageHandler::UDPVoiceCELTAlpha || umtType == MessageHandler::UDPVoiceCELTBeta) {
-					int wantversion = (umtType == MessageHandler::UDPVoiceCELTAlpha) ? g.iCodecAlpha : g.iCodecBeta;
+				if (umtType == MessageTypes::UDPVoiceCELTAlpha || umtType == MessageTypes::UDPVoiceCELTBeta) {
+					int wantversion = (umtType == MessageTypes::UDPVoiceCELTAlpha) ? g.iCodecAlpha : g.iCodecBeta;
 					if ((p == &LoopUser::lpLoopy) && (! g.qmCodecs.isEmpty())) {
 						QMap<int, CELTCodec *>::const_iterator i = g.qmCodecs.constEnd();
 						--i;
@@ -323,7 +323,7 @@ bool AudioOutputSpeech::needSamples(unsigned int snum) {
 						cCodec->decode_float(cdDecoder, qba.isEmpty() ? NULL : reinterpret_cast<const unsigned char *>(qba.constData()), qba.size(), pOut);
 					else
 						memset(pOut, 0, sizeof(float) * iFrameSize);
-				} else if (umtType == MessageHandler::UDPVoiceOpus) {
+				} else if (umtType == MessageTypes::UDPVoiceOpus) {
 #ifdef USE_OPUS
 					decodedSamples = opus_decode_float(opusState, qba.isEmpty() ? NULL : reinterpret_cast<const unsigned char *>(qba.constData()), qba.size(), pOut, iAudioBufferSize, 0);
 					iOutputSize = static_cast<unsigned int>(ceilf(static_cast<float>(decodedSamples * iMixerFreq) / static_cast<float>(iSampleRate)));
@@ -369,12 +369,12 @@ bool AudioOutputSpeech::needSamples(unsigned int snum) {
 				if (qlFrames.isEmpty() && bHasTerminator)
 					nextalive = false;
 			} else {
-				if (umtType == MessageHandler::UDPVoiceCELTAlpha || umtType == MessageHandler::UDPVoiceCELTBeta) {
+				if (umtType == MessageTypes::UDPVoiceCELTAlpha || umtType == MessageTypes::UDPVoiceCELTBeta) {
 					if (cdDecoder)
 						cCodec->decode_float(cdDecoder, NULL, 0, pOut);
 					else
 						memset(pOut, 0, sizeof(float) * iFrameSize);
-				} else if (umtType == MessageHandler::UDPVoiceOpus) {
+				} else if (umtType == MessageTypes::UDPVoiceOpus) {
 #ifdef USE_OPUS
 					opus_decode_float(opusState, NULL, 0, pOut, iFrameSize, 0);
 #endif

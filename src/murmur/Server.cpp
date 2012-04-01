@@ -39,11 +39,11 @@
 #include "Group.h"
 #include "User.h"
 #include "Channel.h"
-#include "Message.h"
 #include "Meta.h"
 #include "PacketDataStream.h"
 #include "ServerDB.h"
 #include "ServerUser.h"
+#include "ConversionHelpers.h"
 
 #ifdef USE_BONJOUR
 #include "BonjourServer.h"
@@ -762,18 +762,18 @@ void Server::run() {
 				}
 				len -= 4;
 
-				MessageHandler::UDPMessageType msgType = static_cast<MessageHandler::UDPMessageType>((buffer[0] >> 5) & 0x7);
+				MessageTypes::UDPMessageType msgType = static_cast<MessageTypes::UDPMessageType>((buffer[0] >> 5) & 0x7);
 
 				switch (msgType) {
-					case MessageHandler::UDPVoiceSpeex:
-					case MessageHandler::UDPVoiceCELTAlpha:
-					case MessageHandler::UDPVoiceCELTBeta:
-					case MessageHandler::UDPVoiceOpus: {
+					case MessageTypes::UDPVoiceSpeex:
+					case MessageTypes::UDPVoiceCELTAlpha:
+					case MessageTypes::UDPVoiceCELTBeta:
+					case MessageTypes::UDPVoiceOpus: {
 							u->bUdp = true;
 							processMsg(u, buffer, len);
 							break;
 						}
-					case MessageHandler::UDPPing: {
+					case MessageTypes::UDPPing: {
 							QByteArray qba;
 							sendMessage(u, buffer, len, qba, true);
 						}
@@ -891,7 +891,7 @@ void Server::processMsg(ServerUser *u, const char *data, int len) {
 	char buffer[UDP_PACKET_SIZE];
 	PacketDataStream pdi(data + 1, len - 1);
 	PacketDataStream pds(buffer+1, UDP_PACKET_SIZE-1);
-	MessageHandler::UDPMessageType msgType = static_cast<MessageHandler::UDPMessageType>((buffer[0] >> 5) & 0x7);
+	MessageTypes::UDPMessageType msgType = static_cast<MessageTypes::UDPMessageType>((buffer[0] >> 5) & 0x7);
 	unsigned int type = data[0] & 0xe0;
 	unsigned int target = data[0] & 0x1f;
 	unsigned int poslen;
@@ -906,7 +906,7 @@ void Server::processMsg(ServerUser *u, const char *data, int len) {
 
 	pdi >> counter;
 
-	if (msgType != MessageHandler::UDPVoiceOpus) {
+	if (msgType != MessageTypes::UDPVoiceOpus) {
 		do {
 			counter = pdi.next8();
 			pdi.skip(counter & 0x7f);
@@ -1253,7 +1253,7 @@ void Server::message(unsigned int uiType, const QByteArray &qbaMsg, ServerUser *
 		u->resetActivityTime();
 	}
 
-	if (uiType == MessageHandler::UDPTunnel) {
+	if (uiType == MessageTypes::UDPTunnel) {
 		int l = qbaMsg.size();
 		if (l < 2)
 			return;
@@ -1264,13 +1264,13 @@ void Server::message(unsigned int uiType, const QByteArray &qbaMsg, ServerUser *
 
 		const char *buffer = qbaMsg.constData();
 
-		MessageHandler::UDPMessageType msgType = static_cast<MessageHandler::UDPMessageType>((buffer[0] >> 5) & 0x7);
+		MessageTypes::UDPMessageType msgType = static_cast<MessageTypes::UDPMessageType>((buffer[0] >> 5) & 0x7);
 
 		switch (msgType) {
-			case MessageHandler::UDPVoiceCELTAlpha:
-			case MessageHandler::UDPVoiceCELTBeta:
-			case MessageHandler::UDPVoiceSpeex:
-			case MessageHandler::UDPVoiceOpus:
+			case MessageTypes::UDPVoiceCELTAlpha:
+			case MessageTypes::UDPVoiceCELTBeta:
+			case MessageTypes::UDPVoiceSpeex:
+			case MessageTypes::UDPVoiceOpus:
 				processMsg(u, buffer, l);
 				break;
 			default:
@@ -1281,7 +1281,7 @@ void Server::message(unsigned int uiType, const QByteArray &qbaMsg, ServerUser *
 	}
 
 #ifdef QT_NO_DEBUG
-#define MUMBLE_MH_MSG(x) case MessageHandler:: x : { \
+#define MUMBLE_MH_MSG(x) case MessageTypes:: x : { \
 		MumbleProto:: x msg; \
 		if (msg.ParseFromArray(qbaMsg.constData(), qbaMsg.size())) { \
 			msg.DiscardUnknownFields(); \
@@ -1290,10 +1290,10 @@ void Server::message(unsigned int uiType, const QByteArray &qbaMsg, ServerUser *
 		break; \
 	}
 #else
-#define MUMBLE_MH_MSG(x) case MessageHandler:: x : { \
+#define MUMBLE_MH_MSG(x) case MessageTypes:: x : { \
 		MumbleProto:: x msg; \
 		if (msg.ParseFromArray(qbaMsg.constData(), qbaMsg.size())) { \
-			if (uiType != MessageHandler::Ping) { \
+			if (uiType != MessageTypes::Ping) { \
 				printf("== %s:\n", #x); \
 				msg.PrintDebugString(); \
 			} \
@@ -1332,7 +1332,7 @@ void Server::tcpTransmitData(QByteArray a, unsigned int id) {
 
 		qba.resize(len + 6);
 		unsigned char *uc = reinterpret_cast<unsigned char *>(qba.data());
-		* reinterpret_cast<quint16 *>(& uc[0]) = qToBigEndian(static_cast<quint16>(MessageHandler::UDPTunnel));
+		* reinterpret_cast<quint16 *>(& uc[0]) = qToBigEndian(static_cast<quint16>(MessageTypes::UDPTunnel));
 		* reinterpret_cast<quint32 *>(& uc[2]) = qToBigEndian(static_cast<quint32>(len));
 		memcpy(uc + 6, a.constData(), len);
 

@@ -54,6 +54,7 @@
 #include "UserModel.h"
 #include "VersionCheck.h"
 #include "ViewCert.h"
+#include "ConversionHelpers.h"
 
 #define ACTOR_INIT \
 	ClientUser *pSrc=NULL; \
@@ -71,9 +72,6 @@
 #define SELF_INIT \
 	ClientUser *pSelf = ClientUser::get(g.uiSession);
 
-
-void MainWindow::msgAuthenticate(const MumbleProto::Authenticate &) {
-}
 
 void MainWindow::msgBanList(const MumbleProto::BanList &msg) {
 	if (banEdit) {
@@ -234,9 +232,6 @@ void MainWindow::msgPermissionDenied(const MumbleProto::PermissionDenied &msg) {
 			}
 			break;
 	}
-}
-
-void MainWindow::msgUDPTunnel(const MumbleProto::UDPTunnel &) {
 }
 
 void MainWindow::msgUserState(const MumbleProto::UserState &msg) {
@@ -608,9 +603,6 @@ void MainWindow::msgQueryUsers(const MumbleProto::QueryUsers &msg) {
 		aclEdit->returnQuery(msg);
 }
 
-void MainWindow::msgPing(const MumbleProto::Ping &) {
-}
-
 void MainWindow::msgCryptSetup(const MumbleProto::CryptSetup &msg) {
 	ConnectionPtr c= g.sh->cConnection;
 	if (! c)
@@ -632,9 +624,6 @@ void MainWindow::msgCryptSetup(const MumbleProto::CryptSetup &msg) {
 		mpcs.set_client_nonce(std::string(reinterpret_cast<const char *>(c->csCrypt.encrypt_iv), AES_BLOCK_SIZE));
 		g.sh->sendMessage(mpcs);
 	}
-}
-
-void MainWindow::msgContextAction(const MumbleProto::ContextAction &) {
 }
 
 void MainWindow::msgContextActionModify(const MumbleProto::ContextActionModify &msg) {
@@ -696,9 +685,6 @@ void MainWindow::msgUserList(const MumbleProto::UserList &msg) {
 	}
 	userEdit = new UserEdit(msg, this);
 	userEdit->show();
-}
-
-void MainWindow::msgVoiceTarget(const MumbleProto::VoiceTarget &) {
 }
 
 void MainWindow::msgPermissionQuery(const MumbleProto::PermissionQuery &msg) {
@@ -780,9 +766,6 @@ void MainWindow::msgUserStats(const MumbleProto::UserStats &msg) {
 		qmUserInformations.insert(msg.session(), ui);
 		ui->show();
 	}
-}
-
-void MainWindow::msgRequestBlob(const MumbleProto::RequestBlob &) {
 }
 
 void MainWindow::msgSuggestConfig(const MumbleProto::SuggestConfig &msg) {

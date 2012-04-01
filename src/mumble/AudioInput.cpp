@@ -38,7 +38,7 @@
 #include "User.h"
 #include "PacketDataStream.h"
 #include "Plugins.h"
-#include "Message.h"
+#include "MessageHandler.h"
 #include "Global.h"
 #include "NetworkConfig.h"
 #include "VoiceRecorder.h"
@@ -101,14 +101,14 @@ AudioInput::AudioInput() : opusBuffer(g.s.iFramesPerPacket * (SAMPLE_RATE / 100)
 	g.iAudioBandwidth = getNetworkBandwidth(iAudioQuality, iAudioFrames);
 
 	if (preferCELT(iAudioQuality, iAudioFrames))
-		umtType = MessageHandler::UDPVoiceCELTAlpha;
+		umtType = MessageTypes::UDPVoiceCELTAlpha;
 	else
-		umtType = MessageHandler::UDPVoiceSpeex;
+		umtType = MessageTypes::UDPVoiceSpeex;
 
 	cCodec = NULL;
 	ceEncoder = NULL;
 
-	if (umtType != MessageHandler::UDPVoiceSpeex) {
+	if (umtType != MessageTypes::UDPVoiceSpeex) {
 		iSampleRate = SAMPLE_RATE;
 		iFrameSize = SAMPLE_RATE / 100;
 
@@ -567,7 +567,7 @@ void AudioInput::setMaxBandwidth(int bitspersec) {
 	}
 
 	AudioInputPtr ai = g.ai;
-	if (ai && (preferCELT(bitrate, frames) == (ai->umtType != MessageHandler::UDPVoiceSpeex))) {
+	if (ai && (preferCELT(bitrate, frames) == (ai->umtType != MessageTypes::UDPVoiceSpeex))) {
 		g.iAudioBandwidth = getNetworkBandwidth(bitrate, frames);
 		ai->iAudioQuality = bitrate;
 		ai->iAudioFrames = frames;
@@ -743,9 +743,9 @@ int AudioInput::encodeCELTFrame(short *psSource, unsigned char *buffer) {
 	if (g.uiSession && g.s.lmLoopMode != Settings::Local) {
 		int v = cCodec->bitstreamVersion();
 		if (v == g.iCodecAlpha)
-			umtType = MessageHandler::UDPVoiceCELTAlpha;
+			umtType = MessageTypes::UDPVoiceCELTAlpha;
 		else if (v == g.iCodecBeta)
-			umtType = MessageHandler::UDPVoiceCELTBeta;
+			umtType = MessageTypes::UDPVoiceCELTBeta;
 		else {
 			qWarning() << "Couldn't find message type for codec version" << v;
 			return 0;
@@ -921,14 +921,14 @@ void AudioInput::encodeAudioFrame() {
 	bool encoded = true;
 #ifdef USE_OPUS
 	// Force Opus mode.
-	umtType = MessageHandler::UDPVoiceOpus;
+	umtType = MessageTypes::UDPVoiceOpus;
 #endif
-	if (umtType == MessageHandler::UDPVoiceCELTAlpha || umtType == MessageHandler::UDPVoiceCELTBeta) {
+	if (umtType == MessageTypes::UDPVoiceCELTAlpha || umtType == MessageTypes::UDPVoiceCELTBeta) {
 		len = encodeCELTFrame(psSource, buffer);
 		if (len == 0)
 			return;
 		++iBufferedFrames;
-	} else if (umtType == MessageHandler::UDPVoiceOpus) {
+	} else if (umtType == MessageTypes::UDPVoiceOpus) {
 		encoded = false;
 		opusBuffer.insert(opusBuffer.end(), psSource, psSource + iFrameSize);
 		++iBufferedFrames;
@@ -992,7 +992,7 @@ void AudioInput::flushCheck(const QByteArray &frame, bool terminator) {
 	// Sequence number
 	pds << iFrameCounter - frames;
 
-	if (umtType == MessageHandler::UDPVoiceOpus) {
+	if (umtType == MessageTypes::UDPVoiceOpus) {
 		const QByteArray &qba = qlFrames.takeFirst();
 		int size = qba.size();
 		if (terminator)

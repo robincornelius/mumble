@@ -43,7 +43,7 @@
 #include "Audio.h"
 #include "Settings.h"
 #include "Timer.h"
-#include "Message.h"
+#include "MessageHandler.h"
 
 class AudioInput;
 struct OpusEncoder;
@@ -99,7 +99,7 @@ class AudioInput : public QThread {
 		int encodeSpeexFrame(short *pSource, unsigned char *buffer);
 		int encodeCELTFrame(short *pSource, unsigned char *buffer);
 	protected:
-		MessageHandler::UDPMessageType umtType;
+		MessageTypes::UDPMessageType umtType;
 		SampleFormat eMicFormat, eEchoFormat;
 
 		unsigned int iSampleRate;
