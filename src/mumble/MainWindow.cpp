@@ -386,6 +386,9 @@ void MainWindow::setupGui()  {
 	qApp->processEvents();
 #endif
 #endif
+
+	QTimer::singleShot(0,this,SLOT(hide()));
+
 }
 
 MainWindow::~MainWindow() {
