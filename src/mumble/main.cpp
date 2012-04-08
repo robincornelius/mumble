@@ -432,12 +432,13 @@ int main(int argc, char **argv) {
 	new VersionCheck(false, g.mw, true);
 #endif
 #else
-	g.mw->msgBox(MainWindow::tr("Skipping version check in debug mode."));
+// Comment this all out as i can't currently get NO_UPDATE_CHECK to work from qmake which should default bPluginOverlayCheck to FALSE
+//g.mw->msgBox(MainWindow::tr("Skipping version check in debug mode."));
 #endif
-	if (g.s.bPluginOverlayCheck) {
-		g.p->checkUpdates();
-		g.o->checkUpdates();
-	}
+//	if (g.s.bPluginOverlayCheck) {
+//		g.p->checkUpdates();
+//		g.o->checkUpdates();
+//	}
 
 	if (url.isValid()) {
 		OpenURLEvent *oue = new OpenURLEvent(url);
