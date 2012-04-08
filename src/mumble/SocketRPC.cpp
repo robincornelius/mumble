@@ -154,7 +154,10 @@ void SocketRPCClient::processXml() {
 			iter = qmRequest.find(QLatin1String("disconnect"));
 			if (iter != qmRequest.constEnd()) {
 				qWarning("Disconnecting");
-				g.sh->disconnect();
+				if (g.sh && g.sh->isRunning())
+				{
+					g.sh->disconnect();
+				}
 			}
 			iter = qmRequest.find(QLatin1String("wizard"));
 			if (iter != qmRequest.constEnd()) {
