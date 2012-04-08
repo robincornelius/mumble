@@ -448,7 +448,7 @@ int main(int argc, char **argv) {
 		qApp->postEvent(g.mw, oue);
 #endif
 	} else {
-		g.mw->on_qaServerConnect_triggered(true);
+		//g.mw->on_qaServerConnect_triggered(true);
 	}
 
 	if (! g.bQuit)
