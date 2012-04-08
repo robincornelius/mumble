@@ -128,6 +128,8 @@ void SocketRPCClient::processXml() {
 			g.mw->activateWindow();
 
 			ack = true;
+		} else if (request.nodeName() == QLatin1String("quit")) {
+			qApp->quit();
 		} else if (request.nodeName() == QLatin1String("self")) {
 			iter = qmRequest.find(QLatin1String("mute"));
 			if (iter != qmRequest.constEnd()) {
