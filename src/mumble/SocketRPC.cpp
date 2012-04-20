@@ -129,6 +129,7 @@ void SocketRPCClient::processXml() {
 
 			ack = true;
 		} else if (request.nodeName() == QLatin1String("self")) {
+			qWarning("Got self command");
 			iter = qmRequest.find(QLatin1String("mute"));
 			if (iter != qmRequest.constEnd()) {
 				bool set = iter.value().toBool();
@@ -145,7 +146,31 @@ void SocketRPCClient::processXml() {
 					g.mw->qaAudioDeaf->trigger();
 				}
 			}
-
+			iter = qmRequest.find(QLatin1String("quit"));
+			if (iter != qmRequest.constEnd()) {
+				qWarning("Quitting");
+				qApp->quit();
+			}
+			iter = qmRequest.find(QLatin1String("disconnect"));
+			if (iter != qmRequest.constEnd()) {
+				qWarning("Disconnecting");
+				if (g.sh && g.sh->isRunning())
+				{
+					g.sh->disconnect();
+				}
+			}
+			iter = qmRequest.find(QLatin1String("wizard"));
+			if (iter != qmRequest.constEnd()) {
+				qWarning("Wizard");
+				QTimer::singleShot(0,g.mw,SLOT(on_qaAudioWizardAutoHide_triggered()));
+			}
+			iter = qmRequest.find(QLatin1String("settings"));
+			if (iter != qmRequest.constEnd()) {
+				qWarning("Settings");
+				QTimer::singleShot(0,g.mw,SLOT(on_qaConfigDialogAutoHide_triggered()));
+			}
+		
+		
 			ack = true;
 		} else if (request.nodeName() == QLatin1String("url")) {
 			if (g.sh && g.sh->isRunning() && g.uiSession) {

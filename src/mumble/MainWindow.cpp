@@ -390,6 +390,9 @@ void MainWindow::setupGui()  {
 	qApp->processEvents();
 #endif
 #endif
+
+	QTimer::singleShot(0,this,SLOT(hide()));
+
 }
 
 MainWindow::~MainWindow() {
@@ -1979,6 +1982,36 @@ void MainWindow::on_qaConfigDialog_triggered() {
 	delete dlg;
 }
 
+void MainWindow::on_qaConfigDialogAutoHide_triggered() {
+	QDialog *dlg = NULL;
+	
+	showMinimized();
+	setWindowState(Qt::WindowActive);
+	showNormal();
+	
+#ifdef QT_MAC_USE_COCOA
+	// To fit in with Mumble skins, we'll only use the Mac OS X
+	// config dialog when we're using the Aqua skin with no external
+	// stylesheet set.  Also, the Mac dialog doesn't work when embedded
+	// inside the interactive overlay, so there we always force a regular
+	// ConfigDialog.
+	if (! g.ocIntercept && (g.qsCurrentStyle == QLatin1String("Macintosh (aqua)") || g.qsCurrentStyle.isEmpty())  && g.s.qsSkin.isEmpty())
+		dlg = new ConfigDialogMac(this);
+#endif
+	if (! dlg)
+		dlg = new ConfigDialog(this);
+
+	if (dlg->exec() == QDialog::Accepted) {
+		setupView(false);
+		updateTrayIcon();
+	}
+
+	delete dlg;
+	
+	hide();
+}
+
+
 void MainWindow::on_qaConfigMinimal_triggered() {
 	g.s.bMinimalView = qaConfigMinimal->isChecked();
 	setupView();
@@ -2000,6 +2033,18 @@ void MainWindow::on_qaAudioWizard_triggered() {
 	aw->exec();
 	delete aw;
 }
+
+void MainWindow::on_qaAudioWizardAutoHide_triggered() {
+	showMinimized();
+	setWindowState(Qt::WindowActive);
+	showNormal();
+	raise();
+	AudioWizard *aw = new AudioWizard(this);
+	aw->exec();
+	delete aw;
+	hide();
+}
+
 
 void MainWindow::on_qaHelpWhatsThis_triggered() {
 	QWhatsThis::enterWhatsThisMode();
