@@ -391,7 +391,7 @@ void MainWindow::setupGui()  {
 #endif
 #endif
 
-	QTimer::singleShot(0,this,SLOT(hide()));
+    //QTimer::singleShot(0,this,SLOT(hide()));
 
 }
 

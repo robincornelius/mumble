@@ -169,7 +169,17 @@ void SocketRPCClient::processXml() {
 				qWarning("Settings");
 				QTimer::singleShot(0,g.mw,SLOT(on_qaConfigDialogAutoHide_triggered()));
 			}
-		
+            iter = qmRequest.find(QLatin1String("show"));
+			if (iter != qmRequest.constEnd()) {
+				qWarning("show");
+				QTimer::singleShot(0,g.mw,SLOT(show()));
+			}
+	        iter = qmRequest.find(QLatin1String("hide"));
+			if (iter != qmRequest.constEnd()) {
+				qWarning("hide");
+				QTimer::singleShot(0,g.mw,SLOT(hide()));
+			}
+            
 		
 			ack = true;
 		} else if (request.nodeName() == QLatin1String("url")) {
@@ -257,6 +267,8 @@ void SocketRPC::newConnection() {
 		QLocalSocket *qls = qlsServer->nextPendingConnection();
 		if (! qls)
 			break;
+        qWarning() << "SocketRPC: new connection Starting new client";
+
 		new SocketRPCClient(qls, this);
 	}
 }
