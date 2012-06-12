@@ -1982,13 +1982,16 @@ void MainWindow::on_qaConfigDialog_triggered() {
 	delete dlg;
 }
 
+
 void MainWindow::on_qaConfigDialogAutoHide_triggered() {
 	QDialog *dlg = NULL;
 	
-	showMinimized();
-	setWindowState(Qt::WindowActive);
-	showNormal();
+	//showMinimized();
+	//setWindowState(Qt::WindowActive);
+	//showNormal();
 	
+    raise();
+    
 #ifdef QT_MAC_USE_COCOA
 	// To fit in with Mumble skins, we'll only use the Mac OS X
 	// config dialog when we're using the Aqua skin with no external
@@ -2035,14 +2038,22 @@ void MainWindow::on_qaAudioWizard_triggered() {
 }
 
 void MainWindow::on_qaAudioWizardAutoHide_triggered() {
-	showMinimized();
-	setWindowState(Qt::WindowActive);
-	showNormal();
+	//showMinimized();
+	//setWindowState(Qt::WindowActive);
+	//showNormal();
 	raise();
 	AudioWizard *aw = new AudioWizard(this);
 	aw->exec();
 	delete aw;
 	hide();
+}
+
+
+void MainWindow::on_showwindow_triggered() 
+{
+    setWindowState(Qt::WindowActive);
+	showNormal();
+	raise();
 }
 
 

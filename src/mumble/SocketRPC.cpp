@@ -172,7 +172,7 @@ void SocketRPCClient::processXml() {
             iter = qmRequest.find(QLatin1String("show"));
 			if (iter != qmRequest.constEnd()) {
 				qWarning("show");
-				QTimer::singleShot(0,g.mw,SLOT(show()));
+				QTimer::singleShot(0,g.mw,SLOT(on_showwindow_triggered()));
 			}
 	        iter = qmRequest.find(QLatin1String("hide"));
 			if (iter != qmRequest.constEnd()) {
