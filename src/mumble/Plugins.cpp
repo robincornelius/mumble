@@ -201,7 +201,7 @@ Plugins::Plugins(QObject *p) : QObject(p) {
 #ifndef Q_OS_MAC
 	qsSystemPlugins=QString::fromLatin1("%1/plugins").arg(qApp->applicationDirPath());
 #else
-	qsSystemPlugins=QString::fromLatin1("%1/../Plugins").arg(qApp->applicationDirPath());
+	qsSystemPlugins=QString::fromLatin1("%1/../../../Plugins").arg(qApp->applicationDirPath());
 #endif
 #else
 	qsSystemPlugins=QLatin1String(MUMTEXT(PLUGIN_PATH));
@@ -213,6 +213,10 @@ Plugins::Plugins(QObject *p) : QObject(p) {
 	qsUserPlugins = QString();
 #endif
 
+    
+    qWarning() << " Plugins directory is " << qsSystemPlugins << "\n";
+    
+    
 #ifdef Q_OS_WIN
 	// According to MS KB Q131065, we need this to OpenProcess()
 

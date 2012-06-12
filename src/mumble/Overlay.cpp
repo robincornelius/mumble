@@ -88,9 +88,9 @@ Overlay::Overlay() : QObject() {
 	qlsServer = new QLocalServer(this);
 	QString pipepath;
 #ifdef Q_OS_WIN
-	pipepath = QLatin1String("MumbleOverlayPipe");
+	pipepath = QLatin1String("UnityMumbleOverlayPipe");
 #else
-	pipepath = QDir::home().absoluteFilePath(QLatin1String(".MumbleOverlayPipe"));
+	pipepath = QDir::home().absoluteFilePath(QLatin1String(".UnityMumbleOverlayPipe"));
 	{
 		QFile f(pipepath);
 		if (f.exists()) {

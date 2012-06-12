@@ -168,7 +168,7 @@ __attribute__((constructor))
 static void load_plugin() {
 	bool bCreated = false;
 
-	snprintf(memname, 256, "/MumbleLink.%d", getuid());
+	snprintf(memname, 256, "/UnityMumbleLink.%d", getuid());
 
 	shmfd = shm_open(memname, O_RDWR, S_IRUSR | S_IWUSR);
 	if (shmfd < 0) {

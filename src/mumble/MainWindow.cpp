@@ -138,6 +138,10 @@ MainWindow::MainWindow(QWidget *p) : QMainWindow(p) {
 	qiTalkingShout.addFile(QLatin1String("skin:talking_alt.svg"));
 	qiTalkingWhisper.addFile(QLatin1String("skin:talking_whisper.svg"));
 
+    
+
+    
+    
 #ifdef Q_OS_MAC
 	if (QFile::exists(QLatin1String("skin:mumble.icns")))
 		qiIcon.addFile(QLatin1String("skin:mumble.icns"));
@@ -225,6 +229,12 @@ MainWindow::MainWindow(QWidget *p) : QMainWindow(p) {
 #ifdef NO_UPDATE_CHECK
 	delete qaHelpVersionCheck;
 #endif
+
+
+   
+    
+    
+    
 }
 
 void MainWindow::createActions() {
@@ -476,6 +486,7 @@ void MainWindow::hideEvent(QHideEvent *e) {
 }
 
 void MainWindow::updateTrayIcon() {
+    
 	ClientUser *p=ClientUser::get(g.uiSession);
 
 	if (g.s.bDeaf) {
@@ -2051,6 +2062,17 @@ void MainWindow::on_qaAudioWizardAutoHide_triggered() {
 
 void MainWindow::on_showwindow_triggered() 
 {
+    
+#ifdef Q_WS_MACX
+    ProcessSerialNumber psn;
+    if(GetCurrentProcess(&psn)== noErr)
+    {
+        TransformProcessType(&psn, kProcessTransformToForegroundApplication);
+        
+    }
+#endif 
+    
+    raise();
     setWindowState(Qt::WindowActive);
 	showNormal();
 	raise();
@@ -2532,6 +2554,7 @@ void MainWindow::serverDisconnected(QAbstractSocket::SocketError err, QString re
 }
 
 void MainWindow::trayAboutToShow() {
+    return;
 	bool top = false;
 
 	QPoint p = qstiIcon->geometry().center();

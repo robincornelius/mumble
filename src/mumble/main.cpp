@@ -137,10 +137,19 @@ int main(int argc, char **argv) {
 
 	// Initialize application object.
 	QAppMumble a(argc, argv);
-	a.setApplicationName(QLatin1String("Mumble"));
-	a.setOrganizationName(QLatin1String("Mumble"));
-	a.setOrganizationDomain(QLatin1String("mumble.sourceforge.net"));
+	a.setApplicationName(QLatin1String("UnityMumble"));
+	a.setOrganizationName(QLatin1String("UnityMumble"));
+	a.setOrganizationDomain(QLatin1String("unitymumble.byteme.org"));
 	a.setQuitOnLastWindowClosed(false);
+    
+    
+#ifdef Q_WS_MACX
+    ProcessSerialNumber psn;
+    if(GetCurrentProcess(&psn)== noErr)
+    {
+        TransformProcessType(&psn, kProcessTransformToBackgroundApplication);
+    }
+#endif 
 
 	Global::g_global_struct = new Global();
 
@@ -233,7 +242,7 @@ int main(int argc, char **argv) {
 			QDBusMessage reply=qdbi.call(QLatin1String("openUrl"), QLatin1String(url.toEncoded()));
 			sent = (reply.type() == QDBusMessage::ReplyMessage);
 #else
-			sent = SocketRPC::send(QLatin1String("Mumble"), QLatin1String("url"), param);
+			sent = SocketRPC::send(QLatin1String("UnityMumble"), QLatin1String("url"), param);
 #endif
 			if (sent)
 				return 0;
@@ -245,7 +254,7 @@ int main(int argc, char **argv) {
 			QDBusMessage reply=qdbi.call(QLatin1String("focus"));
 			sent = (reply.type() == QDBusMessage::ReplyMessage);
 #else
-			sent = SocketRPC::send(QLatin1String("Mumble"), QLatin1String("focus"));
+			sent = SocketRPC::send(QLatin1String("UnityMumble"), QLatin1String("focus"));
 #endif
 			if (sent)
 				return 0;
@@ -369,7 +378,7 @@ int main(int argc, char **argv) {
 	QDBusConnection::sessionBus().registerService(QLatin1String("net.sourceforge.mumble.mumble"));
 #endif
 
-	SocketRPC *srpc = new SocketRPC(QLatin1String("Mumble"));
+	SocketRPC *srpc = new SocketRPC(QLatin1String("UnityMumble"));
 
 	g.l->log(Log::Information, MainWindow::tr("Welcome to Mumble."));
 

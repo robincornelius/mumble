@@ -36,7 +36,7 @@ Global *Global::g_global_struct;
 
 static void migrateDataDir() {
 #ifdef Q_OS_MAC
-	QString olddir = QDir::homePath() + QLatin1String("/Library/Preferences/Mumble");
+	QString olddir = QDir::homePath() + QLatin1String("/Library/Preferences/UnityMumble");
 	QString newdir = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
 	QString linksTo = QFile::readLink(olddir);
 	if (!QFile::exists(newdir) && QFile::exists(olddir) && linksTo.isEmpty()) {
@@ -111,14 +111,14 @@ Global::Global() {
 		appdata = QDir::fromNativeSeparators(QString::fromWCharArray(appData));
 
 		if (!appdata.isEmpty()) {
-			appdata.append(QLatin1String("/Mumble"));
+			appdata.append(QLatin1String("/UnityMumble"));
 			qsl << appdata;
 		}
 	}
 #endif
 
 	foreach(const QString &dir, qsl) {
-		QFile inifile(QString::fromLatin1("%1/mumble.ini").arg(dir));
+		QFile inifile(QString::fromLatin1("%1/unitymumble.ini").arg(dir));
 		if (inifile.exists() && inifile.permissions().testFlag(QFile::WriteUser)) {
 			qdBasePath = dir;
 			qs = new QSettings(inifile.fileName(), QSettings::IniFormat);

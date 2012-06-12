@@ -54,12 +54,16 @@ Database::Database() {
 	datapaths << qs.value(QLatin1String("InstPath")).toString();
 	bool found = false;
 
+    qDebug("** PATH SEARCH **\n");
+    
 	for (i = 0; (i < datapaths.size()) && ! found; i++) {
 		if (!datapaths[i].isEmpty()) {
 			QFile f(datapaths[i] + QLatin1String("/mumble.sqlite"));
+            qDebug()<< "Data search path " << datapaths[i] + QLatin1String("/mumble.sqlite") << "\n";
 			if (f.exists()) {
 				db.setDatabaseName(f.fileName());
 				found = db.open();
+                qDebug("Found!");
 			}
 
 			QFile f2(datapaths[i] + QLatin1String("/.mumble.sqlite"));
