@@ -394,10 +394,10 @@ int main(int argc, char **argv) {
 
 	// Configuration updates
 	bool runaudiowizard = false;
-	if (g.s.uiUpdateCounter == 0) {
+	//if (g.s.uiUpdateCounter == 0) {
 		// Previous version was an pre 1.2.3 release or this is the first run
-		runaudiowizard = true;
-	}
+		//runaudiowizard = true;
+	//}
 
 	if (runaudiowizard) {
 		AudioWizard *aw = new AudioWizard(g.mw);
