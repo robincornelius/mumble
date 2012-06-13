@@ -117,6 +117,8 @@ class MainWindow : public QMainWindow, public MessageHandler, public Ui::MainWin
 		static const QString defaultStyleSheet;
 
 		void openTextMessageDialog(ClientUser *p);
+    
+        bool RPCAutoHideInProgress;
 
 #ifdef Q_OS_WIN
 		Timer tInactive;
@@ -243,6 +245,7 @@ class MainWindow : public QMainWindow, public MessageHandler, public Ui::MainWin
 		void trayAboutToShow();
 		void sendChatbarMessage(QString msg);
         void on_showwindow_triggered();
+        void on_hidewindow_triggered(); 
 	public:
 		MainWindow(QWidget *parent);
 		~MainWindow();

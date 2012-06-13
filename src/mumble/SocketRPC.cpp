@@ -149,7 +149,7 @@ void SocketRPCClient::processXml() {
 			iter = qmRequest.find(QLatin1String("quit"));
 			if (iter != qmRequest.constEnd()) {
 				qWarning("Quitting");
-				qApp->quit();
+				QTimer::singleShot(0,g.mw,SLOT( on_qaQuit_triggered()));
 			}
 			iter = qmRequest.find(QLatin1String("disconnect"));
 			if (iter != qmRequest.constEnd()) {
@@ -177,7 +177,7 @@ void SocketRPCClient::processXml() {
 	        iter = qmRequest.find(QLatin1String("hide"));
 			if (iter != qmRequest.constEnd()) {
 				qWarning("hide");
-				QTimer::singleShot(0,g.mw,SLOT(hide()));
+				QTimer::singleShot(0,g.mw,SLOT(on_hidewindow_triggered()));
 			}
             
 		

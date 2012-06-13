@@ -140,7 +140,8 @@ MainWindow::MainWindow(QWidget *p) : QMainWindow(p) {
 
     
 
-    
+    RPCAutoHideInProgress = false;
+
     
 #ifdef Q_OS_MAC
 	if (QFile::exists(QLatin1String("skin:mumble.icns")))
@@ -359,7 +360,9 @@ void MainWindow::setupGui()  {
 	// 0 to hide any graphical glitches that occur when we add stuff to the
 	// window.
 	setWindowOpacity(0.0f);
+    
 	show();
+    
 #endif
 
 	connect(qtvUsers->selectionModel(),
@@ -2000,7 +2003,22 @@ void MainWindow::on_qaConfigDialogAutoHide_triggered() {
 	//showMinimized();
 	//setWindowState(Qt::WindowActive);
 	//showNormal();
+    
+    if(RPCAutoHideInProgress==true)
+    {
+        return;        
+    }
+    
+    RPCAutoHideInProgress = true;
 	
+#ifdef Q_WS_MACX
+    ProcessSerialNumber psn;
+    if(GetCurrentProcess(&psn)== noErr)
+    {
+        TransformProcessType(&psn, kProcessTransformToForegroundApplication);        
+    }
+#endif 
+        
     raise();
     
 #ifdef QT_MAC_USE_COCOA
@@ -2023,6 +2041,16 @@ void MainWindow::on_qaConfigDialogAutoHide_triggered() {
 	delete dlg;
 	
 	hide();
+    
+#ifdef Q_WS_MACX
+    if(GetCurrentProcess(&psn)== noErr)
+    {
+        TransformProcessType(&psn, kProcessTransformToBackgroundApplication);        
+    }
+#endif 
+
+    RPCAutoHideInProgress = false;
+
 }
 
 
@@ -2052,11 +2080,37 @@ void MainWindow::on_qaAudioWizardAutoHide_triggered() {
 	//showMinimized();
 	//setWindowState(Qt::WindowActive);
 	//showNormal();
+    
+    if(RPCAutoHideInProgress==true)
+    {
+        return;        
+    }
+    
+    RPCAutoHideInProgress = true;
+    
+#ifdef Q_WS_MACX
+    ProcessSerialNumber psn;
+    if(GetCurrentProcess(&psn)== noErr)
+    {
+        TransformProcessType(&psn, kProcessTransformToForegroundApplication);        
+    }
+#endif 
+    
 	raise();
 	AudioWizard *aw = new AudioWizard(this);
 	aw->exec();
 	delete aw;
 	hide();
+    
+#ifdef Q_WS_MACX
+    if(GetCurrentProcess(&psn)== noErr)
+    {
+        TransformProcessType(&psn, kProcessTransformToBackgroundApplication);        
+    }
+#endif 
+
+    RPCAutoHideInProgress = false;
+
 }
 
 
@@ -2068,7 +2122,6 @@ void MainWindow::on_showwindow_triggered()
     if(GetCurrentProcess(&psn)== noErr)
     {
         TransformProcessType(&psn, kProcessTransformToForegroundApplication);
-        
     }
 #endif 
     
@@ -2076,6 +2129,20 @@ void MainWindow::on_showwindow_triggered()
     setWindowState(Qt::WindowActive);
 	showNormal();
 	raise();
+}
+
+void MainWindow::on_hidewindow_triggered() 
+{
+    
+#ifdef Q_WS_MACX
+    ProcessSerialNumber psn;
+    if(GetCurrentProcess(&psn)== noErr)
+    {
+        TransformProcessType(&psn, kProcessTransformToBackgroundApplication);        
+    }
+#endif 
+    
+    hide();
 }
 
 
