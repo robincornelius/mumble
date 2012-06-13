@@ -252,7 +252,7 @@ Settings::Settings() {
 	qRegisterMetaType<QVariant> ("QVariant");
 
 	atTransmit = VAD;
-	bTransmitPosition = false;
+	bTransmitPosition = true;
 	bMute = bDeaf = false;
 	bTTS = true;
 	bTTSMessageReadBack = false;
@@ -288,8 +288,8 @@ Settings::Settings() {
 	bUpdateCheck = false;
 	bPluginOverlayCheck = false;
 #else
-	bUpdateCheck = true;
-	bPluginOverlayCheck = true;
+	bUpdateCheck = false;
+	bPluginOverlayCheck = false;
 #endif
 
 	qsImagePath = QDesktopServices::storageLocation(QDesktopServices::PicturesLocation);
