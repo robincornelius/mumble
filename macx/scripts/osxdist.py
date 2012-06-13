@@ -440,11 +440,11 @@ if __name__ == '__main__':
 	if options.release:
 		ver = options.release
 		if options.universal:
-			fn = 'release/Mumble-Universal-%s.dmg' % ver
-			title = 'Mumble %s (Universal) ' %ver
+			fn = 'release/UnityMumble-Universal-%s.dmg' % ver
+			title = 'UnityMumble %s (Universal) ' %ver
 		else:
-			fn = 'release/Mumble-%s.dmg' % ver
-			title = 'Mumble %s ' % ver
+			fn = 'release/UnityMumble-%s.dmg' % ver
+			title = 'UnityMumble %s ' % ver
 	# Snapshot
 	elif options.snapshot or options.git:
 		if not options.git:
@@ -452,11 +452,11 @@ if __name__ == '__main__':
 		else:
 			ver = gitrev()	
 		if options.universal:
-			fn = 'release/Mumble-Universal-Snapshot-%s.dmg' % ver
-			title = 'Mumble Snapshot %s (Universal)' % ver
+			fn = 'release/UnityMumble-Universal-Snapshot-%s.dmg' % ver
+			title = 'UnityMumble Snapshot %s (Universal)' % ver
 		else:
-			fn = 'release/Mumble-Snapshot-%s.dmg' % ver
-			title = 'Mumble Snapshot %s' % ver
+			fn = 'release/UnityMumble-Snapshot-%s.dmg' % ver
+			title = 'UnityMumble Snapshot %s' % ver
 	else:
 		print 'Neither snapshot or release selected. Bailing.'
 		sys.exit(1)
@@ -474,7 +474,7 @@ if __name__ == '__main__':
 	os.system('cd scripts && sh mkini.sh')
 
 	# Do the finishing touches to our Application bundle before release
-	a = AppBundle('release/Mumble.app', ver)
+	a = AppBundle('release/UnityMumble.app', ver)
 	if not options.no_server:
 		a.copy_murmur()
 	a.copy_g15helper()
@@ -496,15 +496,15 @@ if __name__ == '__main__':
 		print ' * Signing binaries with identity `%s\'' % options.codesign
 		binaries = [
 			# 1.2.x
-			'release/Mumble.app',
-			'release/Mumble.app/Contents/MacOS/mumble-g15-helper',
-			'release/Mumble.app/Contents/Plugins/liblink.dylib',
-			'release/Mumble.app/Contents/Plugins/libmanual.dylib',
-			'release/Mumble.app/Contents/Codecs/libcelt0.0.7.0.dylib',
-			'release/Mumble.app/Contents/Codecs/libcelt0.0.11.0.dylib',
+			'release/UnityMumble.app',
+			'release/UnityMumble.app/Contents/MacOS/mumble-g15-helper',
+			'release/UnityMumble.app/Contents/Plugins/liblink.dylib',
+			'release/UnityMumble.app/Contents/Plugins/libmanual.dylib',
+			'release/UnityMumble.app/Contents/Codecs/libcelt0.0.7.0.dylib',
+			'release/UnityMumble.app/Contents/Codecs/libcelt0.0.11.0.dylib',
 		]
 		if not options.no_server:
-			binaries.append('release/Mumble.app/Contents/MacOS/murmurd')
+			binaries.append('release/UnityMumble.app/Contents/MacOS/murmurd')
 
 		codesign(binaries)
 		print ''
@@ -518,7 +518,7 @@ if __name__ == '__main__':
 	d.mkdir('.background')
 	d.copy('icons/mumble.osx.installer.png', '/.background/background.png')
 	d.symlink('/Applications', '/Applications')
-	d.copy('release/Mumble.app')
+	d.copy('release/UnityMumble.app')
 	d.copy('README', '/ReadMe.txt')
 	d.copy('CHANGES', '/Changes.txt')
 	d.mkdir('Licenses')
