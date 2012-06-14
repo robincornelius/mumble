@@ -129,7 +129,7 @@ void SocketRPCClient::processXml() {
 
 			ack = true;
 		} else if (request.nodeName() == QLatin1String("self")) {
-			qWarning("Got self command");
+			//qWarning("Got self command");
 			iter = qmRequest.find(QLatin1String("mute"));
 			if (iter != qmRequest.constEnd()) {
 				bool set = iter.value().toBool();
@@ -179,7 +179,11 @@ void SocketRPCClient::processXml() {
 				qWarning("hide");
 				QTimer::singleShot(0,g.mw,SLOT(on_hidewindow_triggered()));
 			}
-            
+            iter = qmRequest.find(QLatin1String("test"));
+			if (iter != qmRequest.constEnd()) {
+				//qWarning("test");
+				//QTimer::singleShot(0,g.mw,SLOT(on_hidewindow_triggered()));
+			}
 		
 			ack = true;
 		} else if (request.nodeName() == QLatin1String("url")) {
@@ -231,7 +235,7 @@ void SocketRPCClient::processXml() {
 
 		replydoc.appendChild(reply);
 
-		qlsSocket->write(replydoc.toByteArray());
+		//qlsSocket->write(replydoc.toByteArray());
 	}
 }
 
@@ -267,7 +271,7 @@ void SocketRPC::newConnection() {
 		QLocalSocket *qls = qlsServer->nextPendingConnection();
 		if (! qls)
 			break;
-        qWarning() << "SocketRPC: new connection Starting new client";
+        //qWarning() << "SocketRPC: new connection Starting new client";
 
 		new SocketRPCClient(qls, this);
 	}
