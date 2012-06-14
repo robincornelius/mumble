@@ -201,7 +201,7 @@ Plugins::Plugins(QObject *p) : QObject(p) {
 #ifndef Q_OS_MAC
 	qsSystemPlugins=QString::fromLatin1("%1/plugins").arg(qApp->applicationDirPath());
 #else
-	qsSystemPlugins=QString::fromLatin1("%1/../../../Plugins").arg(qApp->applicationDirPath());
+	qsSystemPlugins=QString::fromLatin1("%1/../Plugins").arg(qApp->applicationDirPath());
 #endif
 #else
 	qsSystemPlugins=QLatin1String(MUMTEXT(PLUGIN_PATH));
