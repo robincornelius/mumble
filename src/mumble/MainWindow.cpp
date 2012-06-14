@@ -283,9 +283,9 @@ void MainWindow::createActions() {
 	gsVolumeDown=new GlobalShortcut(this, idx++, tr("Volume Down (-10%)", "Global Shortcut"));
 	gsVolumeDown->setObjectName(QLatin1String("VolumeDown"));
 
-	qstiIcon = new QSystemTrayIcon(qiIcon, this);
-	qstiIcon->setToolTip(tr("Mumble -- %1").arg(QLatin1String(MUMBLE_RELEASE)));
-	qstiIcon->setObjectName(QLatin1String("Icon"));
+	////qstiIcon = new QSystemTrayIcon(qiIcon, this);
+	////qstiIcon->setToolTip(tr("Mumble -- %1").arg(QLatin1String(MUMBLE_RELEASE)));
+	////qstiIcon->setObjectName(QLatin1String("Icon"));
 
 	gsWhisper = new GlobalShortcut(this, idx++, tr("Whisper/Shout"), false, QVariant::fromValue(ShortcutTarget()));
 	gsWhisper->setObjectName(QLatin1String("gsWhisper"));
@@ -294,7 +294,7 @@ void MainWindow::createActions() {
 	gsMetaLink->setObjectName(QLatin1String("MetaLink"));
 
 #ifndef Q_OS_MAC
-	qstiIcon->show();
+	////qstiIcon->show();
 #endif
 }
 
@@ -390,7 +390,7 @@ void MainWindow::setupGui()  {
 	qmTray = new QMenu(this);
 	connect(qmTray, SIGNAL(aboutToShow()), this, SLOT(trayAboutToShow()));
 	trayAboutToShow();
-	qstiIcon->setContextMenu(qmTray);
+	////qstiIcon->setContextMenu(qmTray);
 
 	updateTrayIcon();
 
@@ -482,7 +482,7 @@ void MainWindow::hideEvent(QHideEvent *e) {
 #ifdef Q_OS_UNIX
 	if (! qApp->activeModalWidget() && ! qApp->activePopupWidget())
 #endif
-		if (g.s.bHideInTray && qstiIcon->isSystemTrayAvailable() && e->spontaneous())
+		if (g.s.bHideInTray /*&& qstiIcon->isSystemTrayAvailable()*/ && e->spontaneous())
 			QMetaObject::invokeMethod(this, "hide", Qt::QueuedConnection);
 	QMainWindow::hideEvent(e);
 #endif
@@ -493,33 +493,33 @@ void MainWindow::updateTrayIcon() {
 	ClientUser *p=ClientUser::get(g.uiSession);
 
 	if (g.s.bDeaf) {
-		qstiIcon->setIcon(qiIconDeafSelf);
+		//qstiIcon->setIcon(qiIconDeafSelf);
 	} else if (p && p->bDeaf) {
-		qstiIcon->setIcon(qiIconDeafServer);
+		//qstiIcon->setIcon(qiIconDeafServer);
 	} else if (g.s.bMute) {
-		qstiIcon->setIcon(qiIconMuteSelf);
+		//qstiIcon->setIcon(qiIconMuteSelf);
 	} else if (p && p->bMute) {
-		qstiIcon->setIcon(qiIconMuteServer);
+		//qstiIcon->setIcon(qiIconMuteServer);
 	} else if (p && p->bSuppress) {
-		qstiIcon->setIcon(qiIconMuteSuppressed);
+		//qstiIcon->setIcon(qiIconMuteSuppressed);
 	} else if (p && g.s.bStateInTray) {
 		switch (p->tsState) {
 			case Settings::Talking:
-				qstiIcon->setIcon(qiTalkingOn);
+				//qstiIcon->setIcon(qiTalkingOn);
 				break;
 			case Settings::Whispering:
-				qstiIcon->setIcon(qiTalkingWhisper);
+				//qstiIcon->setIcon(qiTalkingWhisper);
 				break;
 			case Settings::Shouting:
-				qstiIcon->setIcon(qiTalkingShout);
+				//qstiIcon->setIcon(qiTalkingShout);
 				break;
 			case Settings::Passive:
 			default:
-				qstiIcon->setIcon(qiTalkingOff);
+				//qstiIcon->setIcon(qiTalkingOff);
 				break;
 		}
 	} else {
-		qstiIcon->setIcon(qiIcon);
+		//qstiIcon->setIcon(qiIcon);
 	}
 }
 
@@ -2616,15 +2616,15 @@ void MainWindow::serverDisconnected(QAbstractSocket::SocketError err, QString re
 			qtReconnect->start();
 		}
 	}
-	qstiIcon->setToolTip(tr("Mumble -- %1").arg(QLatin1String(MUMBLE_RELEASE)));
+	//qstiIcon->setToolTip(tr("Mumble -- %1").arg(QLatin1String(MUMBLE_RELEASE)));
 	AudioInput::setMaxBandwidth(-1);
 }
 
 void MainWindow::trayAboutToShow() {
-    return;
+	/*
 	bool top = false;
 
-	QPoint p = qstiIcon->geometry().center();
+	QPoint p = //qstiIcon->geometry().center();
 	if (p.isNull()) {
 		p = QCursor::pos();
 	}
@@ -2652,6 +2652,7 @@ void MainWindow::trayAboutToShow() {
 		qmTray->addSeparator();
 		qmTray->addAction(qaQuit);
 	}
+	*/
 }
 
 
