@@ -155,9 +155,9 @@ BOOL WINAPI DllMain(HINSTANCE, DWORD fdwReason, LPVOID) {
 	switch (fdwReason) {
 		case DLL_PROCESS_ATTACH:
 			wsPluginName.assign(L"Link");
-			hMapObject = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, L"MumbleLink");
+			hMapObject = OpenFileMapping(FILE_MAP_ALL_ACCESS, FALSE, L"UnityMumbleLink");
 			if (hMapObject == NULL) {
-				hMapObject = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(LinkedMem), L"MumbleLink");
+				hMapObject = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, 0, sizeof(LinkedMem), L"UnityMumbleLink");
 				bCreated = true;
 				if (hMapObject == NULL)
 					return false;
