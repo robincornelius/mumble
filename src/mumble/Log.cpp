@@ -548,7 +548,7 @@ void Log::log(MsgType mt, const QString &console, const QString &terse, bool own
 #else
 		if (true) {
 #endif
-			if (g.mw->qstiIcon->isSystemTrayAvailable() && g.mw->qstiIcon->supportsMessages()) {
+/*			if (g.mw->qstiIcon->isSystemTrayAvailable() && g.mw->qstiIcon->supportsMessages()) {
 				QSystemTrayIcon::MessageIcon msgIcon;
 
 				switch (mt) {
@@ -565,7 +565,9 @@ void Log::log(MsgType mt, const QString &console, const QString &terse, bool own
 				}
 
 				g.mw->qstiIcon->showMessage(msgName(mt), plain, msgIcon);
-			}
+            
+            }
+ */
 		}
 #ifdef Q_OS_MAC
 		QString qsScript = QString::fromLatin1(

@@ -80,7 +80,7 @@ class MainWindow : public QMainWindow, public MessageHandler, public Ui::MainWin
 		Q_DISABLE_COPY(MainWindow)
 	public:
 		UserModel *pmModel;
-		QSystemTrayIcon *qstiIcon;
+		//QSystemTrayIcon *qstiIcon;
 		QMenu *qmUser;
 		QMenu *qmChannel;
 		QMenu *qmTray;

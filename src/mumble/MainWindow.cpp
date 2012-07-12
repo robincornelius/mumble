@@ -2543,7 +2543,8 @@ void MainWindow::serverDisconnected(QAbstractSocket::SocketError err, QString re
 			qmb.setEscapeButton(QMessageBox::No);
 
 			QPushButton *qp = qmb.addButton(tr("&View Certificate"), QMessageBox::ActionRole);
-			forever {
+			on_showwindow_triggered();
+            forever {
 				int res = qmb.exec();
 
 				if ((res == 0) && (qmb.clickedButton() == qp)) {
@@ -2557,9 +2558,14 @@ void MainWindow::serverDisconnected(QAbstractSocket::SocketError err, QString re
 				}
 				break;
 			}
+            //fix me, we probably don't want to always hide
+            //we should really only autohide is already hidden
+            on_hidewindow_triggered();
 		}
 	} else if (err == QAbstractSocket::SslHandshakeFailedError) {
+        on_showwindow_triggered();
 		QMessageBox::warning(this, tr("SSL Version mismatch"), tr("This server is using an older encryption standard, and is no longer supported by modern versions of Mumble."), QMessageBox::Ok);
+        on_hidewindow_triggered();
 	} else {
 		bool ok = false;
 
@@ -2578,28 +2584,40 @@ void MainWindow::serverDisconnected(QAbstractSocket::SocketError err, QString re
 		bool matched = true;
 		switch (rtLast) {
 			case MumbleProto::Reject_RejectType_InvalidUsername:
+                on_showwindow_triggered();
 				uname = QInputDialog::getText(this, tr("Invalid username"),
 				                              tr("You connected with an invalid username, please try another one."),
 				                              QLineEdit::Normal, uname, &ok, wf);
+                on_hidewindow_triggered();
+
 				break;
 			case MumbleProto::Reject_RejectType_UsernameInUse:
+                on_showwindow_triggered();
 				uname = QInputDialog::getText(this, tr("Username in use"),
 				                              tr("That username is already in use, please try another username."),
 				                              QLineEdit::Normal, uname, &ok, wf);
+                on_hidewindow_triggered();
+
 				break;
 			case MumbleProto::Reject_RejectType_WrongUserPW:
+                on_showwindow_triggered();
 				pw = QInputDialog::getText(this,
 				                           tr("Wrong certificate or password"),
 				                           tr("Wrong certificate or password for registered user. If you are\n"
 				                              "certain this user is protected by a password please retry.\n"
 				                              "Otherwise abort and check your certificate and username."),
 				                           QLineEdit::Password, pw, &ok, wf);
+                on_hidewindow_triggered();
+
 				break;
 			case MumbleProto::Reject_RejectType_WrongServerPW:
+                on_showwindow_triggered();
 				pw = QInputDialog::getText(this,
 				                           tr("Wrong password"),
 				                           tr("Wrong server password for unregistered user account, please try again."),
 				                           QLineEdit::Password, pw, &ok, wf);
+                on_hidewindow_triggered();
+
 				break;
 			default:
 				matched = false;
