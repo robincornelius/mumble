@@ -1051,7 +1051,7 @@ void MainWindow::on_qaServerBanList_triggered() {
 
 void MainWindow::on_qaServerUserList_triggered() {
 	g.sh->requestUserList();
-
+    
 	if (userEdit) {
 		userEdit->reject();
 		delete userEdit;
@@ -2873,3 +2873,155 @@ void MainWindow::destroyUserInformation() {
 		}
 	}
 }
+
+void MainWindow::on_RPCdeafen_triggered()
+{
+    //Channel * c = ClientUser::get(g.uiSession)->cChannel;
+    
+    Channel *root = Channel::get(0);
+    
+    
+    if(root==NULL)
+    {
+        qWarning("No root channel?");
+        return;
+    }
+    
+    
+    Channel * c =root;
+    QList<User *> userlist = c->qlUsers;
+    QList<User *>::iterator i = userlist.begin();
+    
+    if(i==userlist.end())
+    {
+        qWarning("No users in channel?");
+        
+    }
+    
+    for(i = userlist.begin(); i!=userlist.end();i++)
+    {
+        User * user = (*i);
+        //qWarning(user->qsName.toLatin1()); 
+        
+        if(user->qsName==RPCtargetuser)
+        {
+            
+            
+            MumbleProto::UserState mpus;
+            mpus.set_session(user->uiSession);
+            mpus.set_deaf(RPCenaableuser);
+            g.sh->sendMessage(mpus);
+        }
+        
+        
+    }
+    
+    QList<Channel *>::iterator ci;     
+    for(ci = root->qlChannels.begin(); ci!=root->qlChannels.end();ci++)
+    {
+        
+        Channel * c =(*ci);
+        QList<User *> userlist = c->qlUsers;
+        QList<User *>::iterator i = userlist.begin();
+        
+        if(i==userlist.end())
+        {
+            qWarning("No users in channel?");
+            
+        }
+        
+        for(i = userlist.begin(); i!=userlist.end();i++)
+        {
+            User * user = (*i);
+            //qWarning(user->qsName.toLatin1()); 
+            
+            if(user->qsName==RPCtargetuser)
+            {
+                
+                
+                MumbleProto::UserState mpus;
+                mpus.set_session(user->uiSession);
+                mpus.set_deaf(RPCenaableuser);
+                g.sh->sendMessage(mpus);
+            }
+            
+            
+        }
+    }
+
+
+        
+}
+    
+void MainWindow::on_RPCmute_triggered()    
+{
+    
+    //Channel * c = ClientUser::get(g.uiSession)->cChannel;
+    
+    Channel *root = Channel::get(0);
+    
+
+    if(root==NULL)
+    {
+        qWarning("No root channel?");
+        return;
+    }
+    
+    Channel * c =root;
+    QList<User *> userlist = c->qlUsers;
+    QList<User *>::iterator i = userlist.begin();
+    
+    if(i==userlist.end())
+    {
+        qWarning("No users in channel?");
+        
+    }
+    
+    for(i = userlist.begin(); i!=userlist.end();i++)
+    {
+        User * user = (*i);
+        //qWarning(user->qsName.toLatin1()); 
+        
+        if(user->qsName==RPCtargetuser)
+        {
+            MumbleProto::UserState mpus;
+            mpus.set_session(user->uiSession);
+            mpus.set_mute(RPCenaableuser);
+            g.sh->sendMessage(mpus);
+        }
+        
+    }
+
+    
+    QList<Channel *>::iterator ci;     
+    for(ci = root->qlChannels.begin(); ci!=root->qlChannels.end();ci++)
+    {
+        
+        Channel * c =(*ci);
+        QList<User *> userlist = c->qlUsers;
+        QList<User *>::iterator i = userlist.begin();
+        
+        if(i==userlist.end())
+        {
+            qWarning("No users in channel?");
+            
+        }
+        
+        for(i = userlist.begin(); i!=userlist.end();i++)
+        {
+            User * user = (*i);
+            //qWarning(user->qsName.toLatin1()); 
+            
+            if(user->qsName==RPCtargetuser)
+            {
+                MumbleProto::UserState mpus;
+                mpus.set_session(user->uiSession);
+                mpus.set_mute(RPCenaableuser);
+                g.sh->sendMessage(mpus);
+            }
+            
+        }
+    }
+}
+
+

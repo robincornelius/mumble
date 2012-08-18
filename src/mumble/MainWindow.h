@@ -245,10 +245,16 @@ class MainWindow : public QMainWindow, public MessageHandler, public Ui::MainWin
 		void trayAboutToShow();
 		void sendChatbarMessage(QString msg);
         void on_showwindow_triggered();
-        void on_hidewindow_triggered(); 
+        void on_hidewindow_triggered();
+        void on_RPCdeafen_triggered();
+        void on_RPCmute_triggered();
+
 	public:
 		MainWindow(QWidget *parent);
 		~MainWindow();
+    
+        QString RPCtargetuser;
+        bool    RPCenaableuser;
 
 		// From msgHandler. Implementation in Messages.cpp
 #define MUMBLE_MH_MSG(x) void msg##x(const MumbleProto:: x &);

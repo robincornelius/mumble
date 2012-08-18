@@ -181,9 +181,32 @@ void SocketRPCClient::processXml() {
 			}
             iter = qmRequest.find(QLatin1String("test"));
 			if (iter != qmRequest.constEnd()) {
-				//qWarning("test");
-				//QTimer::singleShot(0,g.mw,SLOT(on_hidewindow_triggered()));
+
 			}
+            iter = qmRequest.find(QLatin1String("deafenuser"));
+			if (iter != qmRequest.constEnd()) {
+                g.mw->RPCtargetuser=iter.value().toString();
+                g.mw->RPCenaableuser=true;
+				QTimer::singleShot(0,g.mw,SLOT(on_RPCdeafen_triggered()));
+			}
+            iter = qmRequest.find(QLatin1String("undeafenuser"));
+			if (iter != qmRequest.constEnd()) {
+                g.mw->RPCtargetuser=iter.value().toString();
+                g.mw->RPCenaableuser=false;
+				QTimer::singleShot(0,g.mw,SLOT(on_RPCdeafen_triggered()));
+			}
+            iter = qmRequest.find(QLatin1String("muteuser"));
+			if (iter != qmRequest.constEnd()) {
+                g.mw->RPCtargetuser=iter.value().toString();
+                g.mw->RPCenaableuser=true;
+				QTimer::singleShot(0,g.mw,SLOT(on_RPCmute_triggered()));
+			}
+            iter = qmRequest.find(QLatin1String("unmuteuser"));
+			if (iter != qmRequest.constEnd()) {
+                g.mw->RPCtargetuser=iter.value().toString();
+                g.mw->RPCenaableuser=false;
+				QTimer::singleShot(0,g.mw,SLOT(on_RPCmute_triggered()));
+			} 
 		
 			ack = true;
 		} else if (request.nodeName() == QLatin1String("url")) {
