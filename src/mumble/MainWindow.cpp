@@ -2205,9 +2205,9 @@ void MainWindow::on_VolumeUp_triggered(bool down, QVariant) {
 	if (down) {
 		float v = floorf(g.s.fVolume * 10.0f);
 		if (v < 20.0f)
-			g.s.fVolume = ++v / 10.0f;
+			g.s.fVolume = ++v / 10.0f; 
 	}
-}
+} 
 
 void MainWindow::on_VolumeDown_triggered(bool down, QVariant) {
 	if (down) {
@@ -2216,7 +2216,12 @@ void MainWindow::on_VolumeDown_triggered(bool down, QVariant) {
 			g.s.fVolume = --v / 10.0f;
 	}
 }
-
+ 
+void MainWindow::on_RPC_Volume()
+{
+	g.s.fVolume = RPCvolume;
+}
+ 
 Channel *MainWindow::mapChannel(int idx) const {
 	if (! g.uiSession)
 		return NULL;

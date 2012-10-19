@@ -1,4 +1,4 @@
-/* Copyright (C) 2005-2011, Thorvald Natvig <thorvald@natvig.com>
+ /* Copyright (C) 2005-2011, Thorvald Natvig <thorvald@natvig.com>
 
    All rights reserved.
 
@@ -206,6 +206,11 @@ void SocketRPCClient::processXml() {
                 g.mw->RPCtargetuser=iter.value().toString();
                 g.mw->RPCenaableuser=false;
 				QTimer::singleShot(0,g.mw,SLOT(on_RPCmute_triggered()));
+			} 
+			iter = qmRequest.find(QLatin1String("volume"));
+			if (iter != qmRequest.constEnd()) {
+                g.mw->RPCvolume=iter.value().toFloat();;
+ 				QTimer::singleShot(0,g.mw,SLOT(on_RPC_Volume));
 			} 
 		
 			ack = true;
