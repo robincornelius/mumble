@@ -209,8 +209,10 @@ void SocketRPCClient::processXml() {
 			} 
 			iter = qmRequest.find(QLatin1String("volume"));
 			if (iter != qmRequest.constEnd()) {
-                g.mw->RPCvolume=iter.value().toFloat();;
- 				QTimer::singleShot(0,g.mw,SLOT(on_RPC_Volume));
+				qWarning("volume");
+                g.mw->RPCvolume=iter.value().toFloat();
+				qWarning() << g.mw->RPCvolume;
+ 				QTimer::singleShot(0,g.mw,SLOT(on_RPC_Volume()));
 			} 
 		
 			ack = true;
