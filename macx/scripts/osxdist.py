@@ -171,7 +171,6 @@ class AppBundle(object):
 					dst = self.framework_path + '/' + basename
 					shutil.copytree(fw_path, dst, symlinks=True)
 					if name.startswith('Qt'):
-						os.remove(dst + '/Headers')
 						os.remove(dst + '/' + name + '.prl')
 						os.remove(dst + '/' + name + '_debug')
 						os.remove(dst + '/' + name + '_debug.prl')
