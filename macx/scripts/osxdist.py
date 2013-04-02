@@ -313,6 +313,7 @@ class AppBundle(object):
 			print ' * Changing version in Info.plist'
 			p = self.infoplist
 			p['CFBundleVersion'] = self.version
+			p['NSQuitAlwaysKeepsWindows'] = False
 			plistlib.writePlist(p, self.infopath)
 
 	def add_compat_warning(self):
