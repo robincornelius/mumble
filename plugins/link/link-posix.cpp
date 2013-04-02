@@ -46,6 +46,8 @@ typedef unsigned long HWND;
 #include <fcntl.h>
 #include <time.h>
 
+static void load_plugin();
+
 static std::wstring wsPluginName;
 static std::wstring wsDescription;
 static char memname[256];
@@ -89,8 +91,12 @@ static void unlock() {
 }
 
 static int trylock() {
+
 	if (lm == lm_invalid)
-		return false;
+    {
+        load_plugin();
+        return false;
+    }
 
 	if ((lm->uiVersion == 1) || (lm->uiVersion == 2)) {
 		if (lm->ui32count != last_count) {
@@ -193,8 +199,15 @@ static void load_plugin() {
 	lm = static_cast<struct LinkedMem*>(
 	         mmap(NULL, sizeof(struct LinkedMem), PROT_READ | PROT_WRITE, MAP_SHARED, shmfd,0));
 
-	if ((lm != lm_invalid) && bCreated)
+    if ((lm != lm_invalid) && bCreated)
+    {
+        fprintf(stderr,"Mumble Link plugin: zeroed out bytes\n");
 		memset(lm, 0, sizeof(struct LinkedMem));
+    }
+    else
+    {
+        fprintf(stderr,"Mumble Link plugin: failed to init shared memory\n");
+    }
 }
 
 __attribute__((destructor))
