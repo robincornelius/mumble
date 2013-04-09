@@ -249,6 +249,7 @@ class MainWindow : public QMainWindow, public MessageHandler, public Ui::MainWin
         void on_RPCdeafen_triggered();
         void on_RPCmute_triggered();
 		void on_RPC_Volume();
+        void on_findDesiredChannel();
 
 	public:
 		MainWindow(QWidget *parent);

@@ -738,12 +738,25 @@ void MainWindow::openUrl(const QUrl &url) {
 	g.sh->start(QThread::TimeCriticalPriority);
 }
 
+// SLOT function used for slingshot operation below
+void MainWindow::on_findDesiredChannel() {
+
+    findDesiredChannel();
+}
+
 void MainWindow::findDesiredChannel() {
 	bool found = false;
 	QStringList qlChans = qsDesiredChannel.split(QLatin1String("/"));
 	Channel *chan = Channel::get(0);
 	QString str = QString();
+    int parent=0;
+    static bool reentry=false;
+
+    printf("Trying to find desired channel\n");
+
 	while (chan && qlChans.count() > 0) {
+        bool found2 = false;
+        printf("Chan loop\n");
 		QString elem = qlChans.takeFirst().toLower();
 		if (elem.isEmpty())
 			continue;
@@ -751,15 +764,35 @@ void MainWindow::findDesiredChannel() {
 			str = elem;
 		else
 			str = str + QLatin1String("/") + elem;
+
+        printf("Str is %s\n",str.toAscii().constData());
 		foreach(Channel *c, chan->qlChannels) {
 			if (c->qsName.toLower() == str) {
 				str = QString();
 				found = true;
-				chan = c;
+                found2 = true;
+                printf("Found matching channel %s",c->qsName.toAscii().constData());
+                chan = c;
+                parent=c->iId;
 				break;
 			}
 		}
+
+        //If the channel does not exist, attempt to create a temp channel then slingshot this
+        //function again to join the channel. Delay required or user does not join channel correctly
+        if(found2==false && reentry==false)
+        {
+            printf("Channel %s not found trying to create\n",str.toAscii().data());
+            //Try create temp channel
+            g.sh->createChannel(parent, str, QString(tr("Temp Channel")), 0, true);
+            reentry=true;
+            QTimer::singleShot(2000,g.mw,SLOT(on_findDesiredChannel()));
+            return;
+        }
 	}
+
+    reentry=false;
+
 	if (found) {
 		if (chan != ClientUser::get(g.uiSession)->cChannel) {
 			g.sh->joinChannel(chan->iId);

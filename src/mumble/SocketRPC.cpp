@@ -100,6 +100,9 @@ void SocketRPCClient::processXml() {
 
 	QDomElement request = qdd.firstChildElement();
 
+    QDomDocument replydoc;
+    QDomElement reply = replydoc.createElement(QLatin1String("reply"));
+
 	if (! request.isNull()) {
 		bool ack = false;
 		QMap<QString, QVariant> qmRequest;
@@ -214,6 +217,42 @@ void SocketRPCClient::processXml() {
 				qWarning() << g.mw->RPCvolume;
  				QTimer::singleShot(0,g.mw,SLOT(on_RPC_Volume()));
 			} 
+            iter = qmRequest.find(QLatin1String("talking"));
+            if (iter != qmRequest.constEnd()) {
+                qWarning("talking");
+                ClientUser *p=ClientUser::get(g.uiSession);
+                QList<ClientUser *> list = p->getTalking();
+
+                QList<ClientUser *>::iterator i;
+
+                QString msg;
+
+                int length = list.length();
+                int count=0;
+
+                if(length==0)
+                    msg.append(QLatin1String("..."));
+
+                for (i = list.begin(); i != list.end(); ++i)
+                {
+                    qWarning() << "talking :"<<(*i)->qsName.toAscii()<<"\n";
+
+                    QDomElement talklist = replydoc.createElement(QLatin1String("talking"));
+                    QDomText text = replydoc.createTextNode((*i)->qsName);
+                    talklist.appendChild(text);
+                    reply.appendChild(talklist);
+                    msg.append((*i)->qsName);
+
+                    if(count!=length-1)
+                        msg.append(QLatin1String(";"));
+                    count++;
+                }
+
+                qlsSocket->write(msg.toAscii());
+                return;
+
+            }
+
 		
 			ack = true;
 		} else if (request.nodeName() == QLatin1String("url")) {
@@ -251,8 +290,7 @@ void SocketRPCClient::processXml() {
 			}
 		}
 
-		QDomDocument replydoc;
-		QDomElement reply = replydoc.createElement(QLatin1String("reply"));
+
 
 		qmReply.insert(QLatin1String("succeeded"), ack);
 
@@ -265,7 +303,7 @@ void SocketRPCClient::processXml() {
 
 		replydoc.appendChild(reply);
 
-		//qlsSocket->write(replydoc.toByteArray());
+        qlsSocket->write(replydoc.toByteArray());
 	}
 }
 
